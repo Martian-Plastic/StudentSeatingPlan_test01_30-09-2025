@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seating Plan App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: space-between;
+            margin: 20px;
+        }
+        .input-area {
+            margin-bottom: 20px;
+            width: 50%;
+        }
+        .student-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 5px;
+            cursor: move;
+            background-color: #e7f3fe;
+        }
+        .seat {
+            width: 80px;
+            height: 50px;
+            border: 2px dashed #ccc;
+            margin: 10px;
+            display: inline-block;
+            text-align: center;
+            transition: border 0.3s;
+        }
+        .seat.selected {
+            border: 2px solid yellow; /* Bolded yellow frame for selected cells */
+        }
+        .table {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+        .group {
+            display: flex;
+            justify-content: center;
+        }
+        .seating-plan {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .row {
+            display: flex;
+            justify-content: space-around;
+        }
+        .status {
+            margin-top: 20px;
+        }
+        .student-names {
+            margin-left: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .correct-answers {
+            display: none;
+            margin-top: 20px;
+        }
+        .folder {
+            margin: 10px 0;
+            cursor: pointer;
+            padding: 5px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="input-area">
+        <input type="text" id="studentInput" placeholder="Enter student name">
+        <input type="text" id="folderInput" placeholder="Enter folder name">
+        <button onclick="addStudent()">Add Student</button>
+        <button onclick="saveStudents()">Save to Folder</button>
+        <button onclick="createFolder()">Create Folder</button>
+        <button onclick="setupCorrectAnswers()">Setup Correct Answers</button>
+        <button onclick="showCorrectAnswers()">Show Correct Answers</button>
+        <button onclick="checkAnswers()">Check Answers</button>
+        <button onclick="refresh()">Refresh</button>
+    </div>
+
+    <div class="seating-plan" id="seatingPlan">
+        <div class="row">
+            <div class="table">
+                <h3>Table 4</h3>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 25" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 26" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 27" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 28" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 29" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 30" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 31" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 32" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+            </div>
+
+            <div class="table">
+                <h3>Table 5</h3>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 33" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 34" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 35" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 36" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 37" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 38" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 39" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 40" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+            </div>
+
+            <div class="table">
+                <h3>Table 6</h3>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 41" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 42" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 43" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 44" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 45" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 46" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 47" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 48" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="table">
+                <h3>Table 1</h3>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 2" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 3" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 4" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 5" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 6" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 7" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 8" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+            </div>
+
+            <div class="table">
+                <h3>Table 2</h3>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 9" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 10" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 11" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 12" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 13" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 14" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 15" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 16" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+            </div>
+
+            <div class="table">
+                <h3>Table 3</h3>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 17" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 18" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 19" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 20" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 21" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 22" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="group">
+                    <div class="seat" data-correct-name="Student 23" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="seat" data-correct-name="Student 24" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="student-names" id="studentNames">
+        <h3>Folders</h3>
+        <div id="folderList"></div>
+        <h3>Current Opening Folder: <span id="currentFolderName">None</span></h3>
+        <h3>Student Names</h3>
+        <div id="nameList"></div>
+    </div>
+
+    <div class="status" id="status"></div>
+    <div class="correct-answers" id="correctAnswers">
+        <h3>Correct Answers</h3>
+        <div id="correctList"></div>
+    </div>
+
+    <script>
+        let folders = {};
+        let currentFolder = '';
+        let correctCount = 0;
+        let correctAnswersVisible = false;
+
+   
+
+        function addStudent() {
+            const input = document.getElementById('studentInput');
+            const name = input.value.trim();
+            if (name) {
+                const studentBox = document.createElement('div');
+                studentBox.className = 'student-box';
+                studentBox.draggable = true;
+                studentBox.ondragstart = (event) => event.dataTransfer.setData("text", name);
+                studentBox.innerText = name;
+                studentBox.oncontextmenu = (event) => {
+                    event.preventDefault();
+                    showContextMenu(event, studentBox);
+                };
+
+                document.getElementById('nameList').appendChild(studentBox);
+                input.value = '';
+            }
+        }
+
+        function showContextMenu(event, studentBox) {
+            const contextMenu = document.createElement('div');
+            contextMenu.style.position = 'absolute';
+            contextMenu.style.left = `${event.pageX}px`;
+            contextMenu.style.top = `${event.pageY}px`;
+            contextMenu.style.backgroundColor = '#fff';
+            contextMenu.style.border = '1px solid #ccc';
+            contextMenu.style.zIndex = '1000';
+
+            const editOption = document.createElement('div');
+            editOption.innerText = 'Edit';
+            editOption.onclick = () => {
+                const newName = prompt("Enter new name:", studentBox.innerText);
+                if (newName) {
+                    studentBox.innerText = newName;
+                }
+                document.body.removeChild(contextMenu);
+            };
+            
+            const deleteOption = document.createElement('div');
+            deleteOption.innerText = 'Delete';
+            deleteOption.onclick = () => {
+                studentBox.remove();
+                document.body.removeChild(contextMenu);
+            };
+
+            contextMenu.appendChild(editOption);
+            contextMenu.appendChild(deleteOption);
+            document.body.appendChild(contextMenu);
+
+            document.addEventListener('click', () => {
+                if (document.body.contains(contextMenu)) {
+                    document.body.removeChild(contextMenu);
+                }
+            }, { once: true });
+        }
+
+        function saveStudents() {
+            if (currentFolder && document.getElementById('nameList').childNodes.length > 0) {
+                const folderContent = folders[currentFolder];
+                folderContent.length = 0; // Clear previous contents
+                document.getElementById('nameList').childNodes.forEach(box => {
+                    folderContent.push(box.innerText);
+                });
+                displayStatus(`Saved student names to folder "${currentFolder}".`, true);
+                refresh();
+            } else {
+                displayStatus("Please create a folder and add student names.", false);
+            }
+        }
+
+        function createFolder() {
+            const folderName = document.getElementById('folderInput').value.trim();
+            if (folderName) {
+                const folderDiv = document.createElement('div');
+                folderDiv.className = 'folder';
+                folderDiv.innerText = folderName;
+                folderDiv.onclick = () => openFolder(folderName);
+                document.getElementById('folderList').appendChild(folderDiv);
+                folders[folderName] = [];
+                displayStatus(`Created folder "${folderName}".`, true);
+                document.getElementById('folderInput').value = '';
+            } else {
+                displayStatus("Please enter a folder name.", false);
+            }
+        }
+
+        function openFolder(folderName) {
+            currentFolder = folderName;
+            document.getElementById('currentFolderName').innerText = folderName;
+            const studentListDiv = document.getElementById('nameList');
+            studentListDiv.innerHTML = ''; // Clear current list
+
+            folders[folderName].forEach(student => {
+                const studentBox = document.createElement('div');
+                studentBox.className = 'student-box';
+                studentBox.innerText = student;
+                studentBox.draggable = true;
+                studentBox.ondragstart = (event) => event.dataTransfer.setData("text", student);
+                studentBox.oncontextmenu = (event) => {
+                    event.preventDefault();
+                    showContextMenu(event, studentBox);
+                };
+                studentListDiv.appendChild(studentBox);
+            });
+            displayStatus(`Opened folder "${folderName}".`, true);
+        }
+
+        function setupCorrectAnswers() {
+            const correctList = document.getElementById('correctList');
+            correctList.innerHTML = ''; // Clear previous answers
+            const seats = document.querySelectorAll('.seat');
+            seats.forEach(seat => {
+                if (seat.innerText) {
+                    const answer = document.createElement('div');
+                    answer.innerText = seat.innerText;
+                    correctList.appendChild(answer);
+                }
+            });
+            displayStatus("Correct answers saved.", true);
+        }
+
+        function showCorrectAnswers() {
+            const correctList = document.getElementById('correctList');
+            correctList.style.display = correctList.style.display === 'block' ? 'none' : 'block';
+            displayStatus(correctList.style.display === 'block' ? "Showing correct answers." : "Hiding correct answers.", true);
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            const name = event.dataTransfer.getData("text");
+            const seat = event.target;
+            seat.innerText = name;
+            seat.classList.add('selected'); // Highlight the selected seat
+            checkSeat(seat, name);
+        }
+
+        function checkSeat(seat, name) {
+            const correctName = seat.getAttribute("data-correct-name");
+            if (correctName === name) {
+                correctCount++;
+                displayStatus("Correct!", true);
+            } else {
+                displayStatus("Incorrect!", false);
+				}
+        }
+
+        function displayStatus(message, isCorrect) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerText = message;
+            statusDiv.style.color = isCorrect ? 'green' : 'red';
+        }
+
+        function checkAnswers() {
+            const seats = document.querySelectorAll('.seat');
+            correctCount = 0;
+            const correctAnswers = document.querySelectorAll('#correctList > div');
+            const correctNames = Array.from(correctAnswers).map(answer => answer.innerText);
+
+            seats.forEach(seat => {
+                if (correctNames.includes(seat.innerText)) {
+                    correctCount++;
+                }
+            });
+
+            const totalSeats = seats.length;
+            const percentage = (correctCount / totalSeats) * 100;
+            displayStatus(`Final Correct Percentage: ${percentage.toFixed(2)}%`, true);
+        }
+
+        function refresh() {
+            const seats = document.querySelectorAll('.seat');
+            seats.forEach(seat => {
+                seat.innerText = '';
+                seat.classList.remove('selected'); // Remove highlight from seats
+            });
+            correctCount = 0;
+            document.getElementById('status').innerText = '';
+            if (currentFolder) {
+                openFolder(currentFolder); // Refresh the current folder view
+            } else {
+                document.getElementById('nameList').innerHTML = ''; // Clear the student list
+            }
+        }
+    </script>
+
+</body>
+</html>
